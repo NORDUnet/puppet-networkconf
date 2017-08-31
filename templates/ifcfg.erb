@@ -1,0 +1,10 @@
+DEVICE=<% @ifname %>
+BOOTPROTO=none
+ONBOOT=yes
+IPV6INIT=yes
+IPADDR=<% @ipv4addr %>
+NETMASK=<% @ipv4netmask %>
+GATEWAY=<% @ipv4gateway %>
+GATEWAY=<% @ipv6gateway %>
+IPV6ADDR=<% @ipv6addr %>/<% @ipv6prefixlength %>
+USERCTL=no

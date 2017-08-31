@@ -1,0 +1,9 @@
+auto <% @ifname %>
+iface <% @ifname %> inet static
+  address <% @ipv4addr %>
+  netmask <% @ipv4netmask %>
+  gateway <% @ipv4gateway %>
+iface <% @ifname %> inet6 static
+  address <% @ipv6addr %>
+  netmask <% @ipv6prefixlength %>
+  gateway <% @ipv6gateway %>
