@@ -5,7 +5,7 @@
 #
 # Parameters
 # ----------
-# 
+#
 # $network_hash
 #
 #
@@ -44,7 +44,16 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-class networkconf {
-
-
+class networkconf
+(
+  Hash $network_hash = {},
+)
+{
+  $default_gateway = {
+    interface => 'ens192', # This is always our first interface
+    gateway   => $network_hash['ens192']['gateway'],
+    gatewayv6 => $network_hash['ens192']['gatewayv6']
+  }
+  notice($network_hash)
+  notice($default_gateway)
 }
