@@ -60,7 +60,6 @@ class networkconf
         refreshonly => true
       }
 
-
       file { '/etc/network/interfaces.d':
         ensure  => 'directory',
         purge   => true,
@@ -84,7 +83,27 @@ class networkconf
 
     }
     'RedHat': {
+      service { 'network':
+        ensure => 'running'
+      }
 
+      file { '/etc/sysconfig/network-scripts/ifcfg-eth0':
+        ensure => 'absent'
+      }
+
+      $network_hash.each |$k, $v| {
+        $ifname = $k
+        $ipv4addr = ip_address($v['ip'])
+        $ipv4netmask = ip_netmask($v['ip'])
+        $ipv4gateway = $v['gateway']
+        $ipv6addr = ip_address($v['ipv6'])
+        $ipv6prefixlength = ip_prefixlength($v['ipv6'])
+        $ipv6gateway = $v['gatewayv6']
+        file { "/etc/sysconfig/network-scripts/ifcfg-${ifname}":
+          content => template('networkconf/redhat/ifcfg-XXX.erb'),
+          # notify  => Service['network']
+        }
+      }
     }
     default: {
       err('Unsupported OS family')
