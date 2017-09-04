@@ -49,11 +49,45 @@ class networkconf
   Hash $network_hash = {},
 )
 {
-  $default_gateway = {
-    interface => 'ens192', # This is always our first interface
-    gateway   => $network_hash['ens192']['gateway'],
-    gatewayv6 => $network_hash['ens192']['gatewayv6']
+  case $::os['family'] {
+    'Debian': {
+      file { '/etc/network/interfaces':
+        content => template('networkconf/debian/interfaces')
+      }
+      exec { 'restart':
+        command     => 'ifdown -a && ip address flush up && ifup -a',
+        path        => '/sbin',
+        refreshonly => true
+      }
+
+
+      file { '/etc/network/interfaces.d':
+        ensure  => 'directory',
+        purge   => true,
+        recurse => true,
+        notify  => Exec['restart']
+      }
+
+      $network_hash.each |$k, $v| {
+        $ifname = $k
+        $ipv4addr = ip_address($v['ip'])
+        $ipv4netmask = ip_netmask($v['ip'])
+        $ipv4gateway = $v['gateway']
+        $ipv6addr = ip_address($v['ipv6'])
+        $ipv6prefixlength = ip_prefixlength($v['ipv6'])
+        $ipv6gateway = $v['gatewayv6']
+        file { "/etc/network/interfaces.d/${ifname}.cfg":
+          content => template('networkconf/debian/ensXXX.cfg.erb'),
+          notify  => Exec['restart']
+        }
+      }
+
+    }
+    'RedHat': {
+
+    }
+    default: {
+      err('Unsupported OS family')
+    }
   }
-  notice($network_hash)
-  notice($default_gateway)
 }

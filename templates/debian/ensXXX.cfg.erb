@@ -1,0 +1,10 @@
+# File managed by puppet, do not change!
+auto <%= @ifname %>
+iface <%= @ifname %> inet static
+  address <%= @ipv4addr %>
+  netmask <%= @ipv4netmask %>
+<% if @ipv4gateway %>  gateway <%= @ipv4gateway %><% end %>
+iface <%= @ifname %> inet6 static
+  address <%= @ipv6addr %>
+  netmask <%= @ipv6prefixlength %>
+<% if @ipv6gateway %>  gateway <%= @ipv6gateway %><% end %>
