@@ -8,7 +8,8 @@
   "project_page": "https://github.com/NORDUnet",
   "issues_url": "https://github.com/NORDUnet/issues",
   "dependencies": [
-    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
+    {"name":"puppetlabs-stdlib","version_requirement":">= 4.17.1"},
+    {"name":"inkblot-ipcalc","version_requirement":">= 2.2.0"}
   ],
   "data_provider": null
 }
