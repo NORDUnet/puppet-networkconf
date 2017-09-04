@@ -84,7 +84,7 @@ class networkconf
     }
     'RedHat': {
       exec { 'restart':
-        command     => 'systemctl restart network',
+        command     => '/usr/bin/systemctl restart network',
         path        => '/sbin',
         refreshonly => true
       }
