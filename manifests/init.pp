@@ -83,8 +83,10 @@ class networkconf
 
     }
     'RedHat': {
-      service { 'network':
-        ensure => 'running'
+      exec { 'restart':
+        command     => 'systemctl restart network',
+        path        => '/sbin',
+        refreshonly => true
       }
 
       file { '/etc/sysconfig/network-scripts/ifcfg-eth0':
@@ -101,7 +103,7 @@ class networkconf
         $ipv6gateway = $v['gatewayv6']
         file { "/etc/sysconfig/network-scripts/ifcfg-${ifname}":
           content => template('networkconf/redhat/ifcfg-XXX.erb'),
-          # notify  => Service['network']
+          notify  => Exec['restart']
         }
       }
     }
