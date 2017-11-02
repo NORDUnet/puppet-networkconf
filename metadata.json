@@ -1,6 +1,6 @@
 {
   "name": "ndn-networkconf",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "ndn",
   "summary": "Setup networking on Ubuntu and CentOS",
   "license": "NORDUnet BSD License",
