@@ -47,6 +47,8 @@
 class networkconf
 (
   Hash $network_hash = {},
+  Array $nameservers = [],
+  Array $searchpath = []
 )
 {
   case $::os['family'] {
@@ -66,6 +68,9 @@ class networkconf
         recurse => true,
         notify  => Exec['restart']
       }
+
+      $nameservers = join($nameservers, ' ')
+      $searchpath = join($searchpath, ' ')
 
       $network_hash.each |$k, $v| {
         $ifname = $k
@@ -92,6 +97,8 @@ class networkconf
       file { '/etc/sysconfig/network-scripts/ifcfg-eth0':
         ensure => 'absent'
       }
+
+      $searchpath = join($searchpath, ' ')
 
       $network_hash.each |$k, $v| {
         $ifname = $k
