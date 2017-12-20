@@ -51,6 +51,7 @@ class networkconf
   Array $searchpath = []
 )
 {
+
   case $::os['family'] {
     'Debian': {
       file { '/etc/network/interfaces':
@@ -74,12 +75,16 @@ class networkconf
 
       $network_hash.each |$k, $v| {
         $ifname = $k
-        $ipv4addr = ip_address($v['ip'])
-        $ipv4netmask = ip_netmask($v['ip'])
-        $ipv4gateway = $v['gateway']
-        $ipv6addr = ip_address($v['ipv6'])
-        $ipv6prefixlength = ip_prefixlength($v['ipv6'])
-        $ipv6gateway = $v['gatewayv6']
+        if has_key($v, 'ip') {
+          $ipv4addr = ip_address($v['ip'])
+          $ipv4netmask = ip_netmask($v['ip'])
+          $ipv4gateway = $v['gateway']
+        }
+        if has_key($v, 'ipv6') {
+          $ipv6addr = ip_address($v['ipv6'])
+          $ipv6prefixlength = ip_prefixlength($v['ipv6'])
+          $ipv6gateway = $v['gatewayv6']
+        }
         file { "/etc/network/interfaces.d/${ifname}.cfg":
           content => template('networkconf/debian/ensXXX.cfg.erb'),
           notify  => Exec['restart']
@@ -102,12 +107,16 @@ class networkconf
 
       $network_hash.each |$k, $v| {
         $ifname = $k
-        $ipv4addr = ip_address($v['ip'])
-        $ipv4netmask = ip_netmask($v['ip'])
-        $ipv4gateway = $v['gateway']
-        $ipv6addr = ip_address($v['ipv6'])
-        $ipv6prefixlength = ip_prefixlength($v['ipv6'])
-        $ipv6gateway = $v['gatewayv6']
+        if has_key($v, 'ip') {
+          $ipv4addr = ip_address($v['ip'])
+          $ipv4netmask = ip_netmask($v['ip'])
+          $ipv4gateway = $v['gateway']
+        }
+        if has_key($v, 'ipv6') {
+          $ipv6addr = ip_address($v['ipv6'])
+          $ipv6prefixlength = ip_prefixlength($v['ipv6'])
+          $ipv6gateway = $v['gatewayv6']
+        }
         file { "/etc/sysconfig/network-scripts/ifcfg-${ifname}":
           content => template('networkconf/redhat/ifcfg-XXX.erb'),
           notify  => Exec['restart']
