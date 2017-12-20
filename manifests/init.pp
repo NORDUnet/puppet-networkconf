@@ -51,7 +51,6 @@ class networkconf
   Array $searchpath = []
 )
 {
-
   case $::os['family'] {
     'Debian': {
       file { '/etc/network/interfaces':
@@ -116,6 +115,14 @@ class networkconf
           content => template('networkconf/redhat/ifcfg-XXX.erb'),
           notify  => Exec['restart']
         }
+      }
+
+      file { '/etc/resolv.conf':
+        content => inline_template('# This file is managed by puppet
+<% @nameservers.each do |ns| -%>
+<%= "nameserver #{ns}" %>
+<% end -%>
+<%= "search #{@searchpath.join(" ")}" %>')
       }
     }
     default: {
