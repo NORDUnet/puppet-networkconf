@@ -70,9 +70,6 @@ class networkconf
         notify  => Exec['restart']
       }
 
-      $nameservers = join($nameservers, ' ')
-      $searchpath = join($searchpath, ' ')
-
       $network_hash.each |$k, $v| {
         $ifname = $k
         if has_key($v, 'ip') {
@@ -102,8 +99,6 @@ class networkconf
       file { '/etc/sysconfig/network-scripts/ifcfg-eth0':
         ensure => 'absent'
       }
-
-      $searchpath = join($searchpath, ' ')
 
       $network_hash.each |$k, $v| {
         $ifname = $k

@@ -8,7 +8,7 @@ IPV6ADDR=<%= @ipv6addr %>/<%= @ipv6prefixlength %>
 <% if @ipv6gateway %>GATEWAY=<%= @ipv6gateway %><% end %>
 <% if @ipv4gateway %>GATEWAY=<%= @ipv4gateway %><% end %>
 USERCTL=no
-DOMAIN="<%= @searchpath %>"
+DOMAIN="<%= @searchpath.join(' ') %>"
 <% @nameservers.each_with_index do |ns, i| -%>
-DNS<%= i %>=<%= ns %>
+<%= "DNS#{i}=#{ns}" %>
 <% end -%>
