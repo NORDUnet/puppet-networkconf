@@ -10,3 +10,14 @@ iface <%= @ifname %> inet6 static
   address <%= @ipv6addr %>
   netmask <%= @ipv6prefixlength %>
 <% if @ipv6gateway %>  gateway <%= @ipv6gateway %><% end %>
+<% if @routes %>  ### static routes ###
+<% @routes.each do |r| %>  post-up route <%= r.has_key?('family') ? "-A #{r['family']} " : '' -%>
+<%= "add -#{r['type']} #{r['target']} gw #{r['gateway']} " -%>
+<%= r.has_key?('metric') ? "metric #{r['metric']}" : '' -%>
+<%= r['reject'] ? "reject " : " " -%>
+<%= "dev #{@ifname}" %>
+  pre-down route <%= r.has_key?('family') ? "-A #{r['family']} " : '' -%>
+<%= "del -#{r['type']} #{r['target']} gw #{r['gateway']} dev #{@ifname}" %>
+<% end %>
+<%end %>
+

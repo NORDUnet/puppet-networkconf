@@ -81,6 +81,9 @@ class networkconf
           $ipv6prefixlength = ip_prefixlength($v['ipv6'])
           $ipv6gateway = $v['gatewayv6']
         }
+        if has_key($v, 'routes') {
+          $routes = $v['routes']
+        }
         file { "/etc/network/interfaces.d/${ifname}.cfg":
           content => template('networkconf/debian/ensXXX.cfg.erb'),
           notify  => Exec['restart']
