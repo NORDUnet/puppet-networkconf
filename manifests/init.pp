@@ -53,20 +53,27 @@ class networkconf
 {
   case $::os['family'] {
     'Debian': {
-      file { '/etc/network/interfaces':
-        content => template('networkconf/debian/interfaces')
+      exec { 'restart_docker':
+        command => '/bin/systemctl restart docker',
+        onlyif => '/bin/systemctl -q is-active docker',
+        refreshonly => true
       }
       exec { 'restart':
         command     => 'ifdown -a && ip address flush up && ifup -a',
         path        => '/sbin',
-        refreshonly => true
+        refreshonly => true,
+      }
+
+      file { '/etc/network/interfaces':
+        content => template('networkconf/debian/interfaces'),
+        notify  => [ Exec['restart'], Exec['restart_docker'] ]
       }
 
       file { '/etc/network/interfaces.d':
         ensure  => 'directory',
         purge   => true,
         recurse => true,
-        notify  => Exec['restart']
+        notify  => [ Exec['restart'], Exec['restart_docker'] ]
       }
 
       $network_hash.each |$k, $v| {
@@ -86,7 +93,7 @@ class networkconf
         }
         file { "/etc/network/interfaces.d/${ifname}.cfg":
           content => template('networkconf/debian/ensXXX.cfg.erb'),
-          notify  => Exec['restart']
+          notify  => [ Exec['restart'], Exec['restart_docker'] ]
         }
       }
 
