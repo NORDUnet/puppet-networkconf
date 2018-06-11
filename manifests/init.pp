@@ -54,8 +54,8 @@ class networkconf
   case $::os['family'] {
     'Debian': {
       exec { 'restart_docker':
-        command => '/bin/systemctl restart docker',
-        onlyif => '/bin/systemctl -q is-active docker',
+        command     => '/bin/systemctl restart docker',
+        onlyif      => '/bin/systemctl -q is-active docker',
         refreshonly => true
       }
       exec { 'restart':
@@ -79,13 +79,23 @@ class networkconf
       $network_hash.each |$k, $v| {
         $ifname = $k
         if has_key($v, 'ip') {
-          $ipv4addr = ip_address($v['ip'])
-          $ipv4netmask = ip_netmask($v['ip'])
+          if $v['ip'] =~ Array {
+            $ipv4addr = ip_address($v['ip'][0])
+            $ipv4netmask = ip_netmask($v['ip'][0])
+          } else {
+            $ipv4addr = ip_address($v['ip'])
+            $ipv4netmask = ip_netmask($v['ip'])
+          }
           $ipv4gateway = $v['gateway']
         }
         if has_key($v, 'ipv6') {
-          $ipv6addr = ip_address($v['ipv6'])
-          $ipv6prefixlength = ip_prefixlength($v['ipv6'])
+          if $v['ipv6'] =~ Array {
+            $ipv6addr = ip_address($v['ipv6'][0])
+            $ipv6prefixlength = ip_prefixlength($v['ipv6'][0])
+          } else {
+            $ipv6addr = ip_address($v['ipv6'])
+            $ipv6prefixlength = ip_prefixlength($v['ipv6'])
+          }
           $ipv6gateway = $v['gatewayv6']
         }
         if has_key($v, 'routes') {
@@ -112,13 +122,23 @@ class networkconf
       $network_hash.each |$k, $v| {
         $ifname = $k
         if has_key($v, 'ip') {
-          $ipv4addr = ip_address($v['ip'])
-          $ipv4netmask = ip_netmask($v['ip'])
+          if $v['ip'] =~ Array {
+            $ipv4addr = ip_address($v['ip'][0])
+            $ipv4netmask = ip_netmask($v['ip'][0])
+          } else {
+            $ipv4addr = ip_address($v['ip'])
+            $ipv4netmask = ip_netmask($v['ip'])
+          }
           $ipv4gateway = $v['gateway']
         }
         if has_key($v, 'ipv6') {
-          $ipv6addr = ip_address($v['ipv6'])
-          $ipv6prefixlength = ip_prefixlength($v['ipv6'])
+          if $v['ipv6'] =~ Array {
+            $ipv6addr = ip_address($v['ipv6'][0])
+            $ipv6prefixlength = ip_prefixlength($v['ipv6'][0])
+          } else {
+            $ipv6addr = ip_address($v['ipv6'])
+            $ipv6prefixlength = ip_prefixlength($v['ipv6'])
+          }
           $ipv6gateway = $v['gatewayv6']
         }
         file { "/etc/sysconfig/network-scripts/ifcfg-${ifname}":
