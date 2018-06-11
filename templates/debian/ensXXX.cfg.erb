@@ -10,6 +10,20 @@ iface <%= @ifname %> inet6 static
   address <%= @ipv6addr %>
   netmask <%= @ipv6prefixlength %>
 <% if @ipv6gateway %>  gateway <%= @ipv6gateway %><% end %>
+<% if @ipv4aliases %>### Interface aliases ###
+<% @ipv4aliases.each_with_index do |v, i| %>auto <%= "#{@ifname}:#{i}" %>
+iface <%= "#{@ifname}:#{i}" %> inet static
+  address <%= v[0] %>
+  netmask <%= v[1] %>
+<% end %>
+<% end %>
+<% if @ipv6aliases %>
+<% @ipv6aliases.each_with_index do |v, i| %>auto <%= "#{@ifname}:#{i}" %>
+iface <%= "#{@ifname}:#{i}" %> inet6 static
+  address <%= v[0] %>
+  netmask <%= v[1] %>
+<% end %>
+<% end %>
 <% if @routes %>  ### static routes ###
 <% @routes.each do |r| %>  post-up route <%= r.has_key?('family') ? "-A #{r['family']} " : '' -%>
 <%= "add -#{r['type']} #{r['target']} gw #{r['gateway']} " -%>

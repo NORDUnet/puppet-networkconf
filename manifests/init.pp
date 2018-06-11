@@ -82,6 +82,7 @@ class networkconf
           if $v['ip'] =~ Array {
             $ipv4addr = ip_address($v['ip'][0])
             $ipv4netmask = ip_netmask($v['ip'][0])
+            $ipv4aliases = delete_at(zip($v['ip'].map |$cidr| { ip_address($cidr) }, $v['ip'].map |$cidr| { ip_netmask($cidr) }), 0)
           } else {
             $ipv4addr = ip_address($v['ip'])
             $ipv4netmask = ip_netmask($v['ip'])
@@ -92,6 +93,7 @@ class networkconf
           if $v['ipv6'] =~ Array {
             $ipv6addr = ip_address($v['ipv6'][0])
             $ipv6prefixlength = ip_prefixlength($v['ipv6'][0])
+            $ipv6aliases = delete_at(zip($v['ipv6'].map |$cidr| { ip_address($cidr) }, $v['ipv6'].map |$cidr| { ip_prefixlength($cidr) }), 0)
           } else {
             $ipv6addr = ip_address($v['ipv6'])
             $ipv6prefixlength = ip_prefixlength($v['ipv6'])
